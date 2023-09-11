@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CS4389</title>
+</head>
+<body>
+    <style>
+        :root {
+            font-family: sans-serif;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+        }
+
+        main {
+            max-width: 1200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center; 
+        }
+
+        #products-container {
+            display: flex;
+            column-gap: 0.5em;
+            row-gap: 1em;
+            flex-wrap: wrap;
+        }
+    </style>
+    
+    <!-- <button id="load-products-button" onclick="loadProducts(event)">Load Products</button> -->
+    <main>
+        <h1 class="main-page-title">E-Commerce Website</h1>
+        <div id="products-container"></div>
+    </main>
+    
+    <script>
+function loadProducts(event) {
+    api_url = "https://pwt6n24ft2.execute-api.us-east-2.amazonaws.com";
+    fetch(api_url+"/products")
+    .then(res_raw => res_raw.json())
+    .then(res => populateProducts(res));
+    // let products = JSON.parse(`[{"PLU":"910956136334","description":"A smart home thermostat that helps you save energy and customize your home's temperature from your phone.","price":19999,"name":"EcoSmart Thermostat"},{"PLU":"961947050502","description":"A sleek and powerful laptop with a high-resolution display, fast processor, and all-day battery life.","price":119999,"name":"TechPro UltraBook X1"},{"PLU":"982038352481","description":"Enjoy the rich and aromatic flavors of our ethically sourced, 100% organic coffee beans.","price":1499,"name":"Premium Organic Coffee Beans"},{"PLU":"921363448554","description":"A professional-grade DSLR camera with a high-resolution sensor, 4K video recording, and advanced shooting modes.","price":149999,"name":"CapturePro DSLR Camera"},{"PLU":"931061209310","description":"Lightweight and breathable running shoes designed for maximum speed and comfort during your workouts.","price":8999,"name":"SpeedMax Running Shoes"}]`);
+    // populateProducts(products);
+
+}
+
+function populateProducts(products) {
+    let productsContainer = document.getElementById("products-container");
+    for (product of products) {
+        let card = createProductCard(product);
+        productsContainer.appendChild(card);
+    }
+    document.getElementById("load-products-button")
+        .style.display = "none";
+}
+
+function createProductCard(product) {
+    let card = document.createElement("product-card");
+    card.setAttribute("data-product", JSON.stringify(product));
+    return card;
+}
+
+function addToCard(product) {
+    console.log("Adding item to cart, ", product);
+}
+
+class ProductCard extends HTMLElement {
+    constructor() {
+      super();
+      this.attachShadow({ mode: 'open' });
+    }
+
+    connectedCallback() {
+        const product = JSON.parse(this.getAttribute('data-product'));
+
+        let style = `
+            * {
+                margin: 0;
+                padding: 0;
+            }
+
+            :host {
+                display: flex;
+                flex-direction: column;
+                max-width: 30ch;
+                gap: 4px;
+                border: solid black 2px;
+                border-radius: 8px;
+                padding: 4px;
+            }
+
+            .name {
+                font-size: 1.4em;
+                overflow: hidden;
+                height: 2.15em;
+            }
+
+            .price {
+                font-size: 1.15em;
+            }
+
+            .description {
+                line-height: 1.15em;
+                height: 4.6em;
+                overflow: hidden;
+            }
+
+            
+        `;
+        let html = `
+            <h1 class="name">${product.name}</h1>
+            <p class="description">${product.description}</p>
+            <h5 class="price">$${product.price/100.0}</h5>
+            <button class="add" onclick="addToCard(${product})">ADD TO CART</button>
+        `
+        this.shadowRoot.innerHTML = "<style>" + style + "</style>" + html;
+    }
+}
+customElements.define('product-card', ProductCard);
+    </script>
+
+    <script>loadProducts()</script>
+</body>
+</html>
