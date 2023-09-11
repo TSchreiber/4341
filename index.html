@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CS4389</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 </head>
 <body>
     <style>
@@ -19,34 +20,116 @@
         }
 
         main {
-            max-width: 1200px;
             display: flex;
-            flex-direction: column;
-            align-items: center; 
+            margin: 1.5em;
+            align-items: flex-start;
         }
 
         #products-container {
             display: flex;
+            max-width: 1200px;
             column-gap: 0.5em;
             row-gap: 1em;
             flex-wrap: wrap;
         }
+
+        header {
+            display: grid;
+            width: 100%;
+            grid-template-columns: 1fr 10fr 1fr;
+            grid-template-areas: ". title cart";
+        }
+
+        .main-page-title {
+            grid-area: title;
+            text-align: center;
+        }
+
+        .cart-container {
+            grid-area: cart;
+            align-self: center;
+            justify-self: center;
+            position: relative;
+        }
+
+        .shopping-cart-icon {
+            font-size: 2.5rem;
+            border-radius: 100%;
+            padding: 8px;
+            user-select: none;
+            cursor: pointer;
+        }
+
+        .shopping-cart-icon:hover {
+            background: #00000018;
+        }
+
+        .cart-container::after {
+            content: attr(data-count);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            right: 0;
+            top: 0;
+            font-size: 0.85rem;
+            width: 1.5em;
+            height: 1.5em;
+            border-radius: 100%;
+            background: red;
+            color: white;
+            user-select: none;
+        }
+
+        #cart-contents-panel {
+            background: white;
+            display: flex;
+            flex-direction: column;
+            row-gap: 0.5em;
+        }
+
+        #cart-contents-panel button {
+            font-size: 1em;
+        }
+
+        #cart-contents-panel[data-count="0"] button {
+            display: none;
+        }
+    </style>
+    <style>
+        .material-symbols-outlined {
+          font-variation-settings:
+          'FILL' 0,
+          'wght' 400,
+          'GRAD' 0,
+          'opsz' 24
+        }
     </style>
     
-    <!-- <button id="load-products-button" onclick="loadProducts(event)">Load Products</button> -->
-    <main>
+    <header>
         <h1 class="main-page-title">E-Commerce Website</h1>
+        <!-- The onclick handler needs to be on the container instead of the icon
+            because the icon has the css property "pointer-events: none;" -->
+        <div id="cart" class="cart-container" onclick="handle_cart_onclick(event)" data-count="0"> 
+            <span class="material-symbols-outlined shopping-cart-icon">shopping_cart</span>
+        </div>
+    </header>
+    <main>
         <div id="products-container"></div>
+        <div id="cart-contents-panel" data-count="0">
+            <button>Proceed to Checkout</button>
+        </div>
     </main>
+
     
     <script>
 function loadProducts(event) {
-    api_url = "https://pwt6n24ft2.execute-api.us-east-2.amazonaws.com";
-    fetch(api_url+"/products")
-    .then(res_raw => res_raw.json())
-    .then(res => populateProducts(res));
-    // let products = JSON.parse(`[{"PLU":"910956136334","description":"A smart home thermostat that helps you save energy and customize your home's temperature from your phone.","price":19999,"name":"EcoSmart Thermostat"},{"PLU":"961947050502","description":"A sleek and powerful laptop with a high-resolution display, fast processor, and all-day battery life.","price":119999,"name":"TechPro UltraBook X1"},{"PLU":"982038352481","description":"Enjoy the rich and aromatic flavors of our ethically sourced, 100% organic coffee beans.","price":1499,"name":"Premium Organic Coffee Beans"},{"PLU":"921363448554","description":"A professional-grade DSLR camera with a high-resolution sensor, 4K video recording, and advanced shooting modes.","price":149999,"name":"CapturePro DSLR Camera"},{"PLU":"931061209310","description":"Lightweight and breathable running shoes designed for maximum speed and comfort during your workouts.","price":8999,"name":"SpeedMax Running Shoes"}]`);
-    // populateProducts(products);
+    // api_url = "https://pwt6n24ft2.execute-api.us-east-2.amazonaws.com";
+    // fetch(api_url+"/products")
+    // .then(res_raw => res_raw.json())
+    // .then(res => populateProducts(res));
+    let products = JSON.parse(`[{"PLU":"910956136334","description":"A smart home thermostat that helps you save energy and customize your home's temperature from your phone.","price":19999,"name":"EcoSmart Thermostat"},{"PLU":"961947050502","description":"A sleek and powerful laptop with a high-resolution display, fast processor, and all-day battery life.","price":119999,"name":"TechPro UltraBook X1"},{"PLU":"982038352481","description":"Enjoy the rich and aromatic flavors of our ethically sourced, 100% organic coffee beans.","price":1499,"name":"Premium Organic Coffee Beans"},{"PLU":"921363448554","description":"A professional-grade DSLR camera with a high-resolution sensor, 4K video recording, and advanced shooting modes.","price":149999,"name":"CapturePro DSLR Camera"},{"PLU":"931061209310","description":"Lightweight and breathable running shoes designed for maximum speed and comfort during your workouts.","price":8999,"name":"SpeedMax Running Shoes"}]`);
+    populateProducts(products);
 
 }
 
@@ -56,8 +139,8 @@ function populateProducts(products) {
         let card = createProductCard(product);
         productsContainer.appendChild(card);
     }
-    document.getElementById("load-products-button")
-        .style.display = "none";
+    let loadProdButton = document.getElementById("load-products-button");
+    if (loadProdButton) loadProdButton.style.display = "none";
 }
 
 function createProductCard(product) {
@@ -66,8 +149,43 @@ function createProductCard(product) {
     return card;
 }
 
-function addToCard(product) {
-    console.log("Adding item to cart, ", product);
+const cart = {
+    domElement: document.getElementById("cart"),
+    cartContentsElement: document.getElementById("cart-contents-panel"),
+    items: [],
+
+    add: function(item) {
+        this.items.push(item);
+        this.domElement.setAttribute("data-count", this.items.length);
+        this.cartContentsElement.setAttribute("data-count", this.items.length);
+        let cartCardEl = document.createElement("cart-card");
+        cartCardEl.setAttribute("data-product", JSON.stringify(item));
+        this.cartContentsElement.appendChild(cartCardEl);
+    },
+
+    remove: function(item, element) {
+        let i = this.items.findIndex(x => x === item);
+        this.items.splice(i,1);
+        this.domElement.setAttribute("data-count", this.items.length);
+        this.cartContentsElement.setAttribute("data-count", this.items.length);
+        this.cartContentsElement.removeChild(element);
+    }
+}
+
+function handle_addToCart_onclick(event) {
+    let host = event.target.getRootNode().host;
+    let product = JSON.parse(host.getAttribute("data-product"));
+    cart.add(product);
+}
+
+function handle_removeFromCart_onclick(event) {
+    let host = event.target.getRootNode().host;
+    let product = JSON.parse(host.getAttribute("data-product"));
+    cart.remove(product, host);
+}
+
+function handle_cart_onclick(event) {
+
 }
 
 class ProductCard extends HTMLElement {
@@ -77,7 +195,7 @@ class ProductCard extends HTMLElement {
     }
 
     connectedCallback() {
-        const product = JSON.parse(this.getAttribute('data-product'));
+        this.product = JSON.parse(this.getAttribute('data-product'));
 
         let style = `
             * {
@@ -111,18 +229,69 @@ class ProductCard extends HTMLElement {
                 overflow: hidden;
             }
 
-            
+            button {
+                cursor: pointer;
+            }
         `;
         let html = `
-            <h1 class="name">${product.name}</h1>
-            <p class="description">${product.description}</p>
-            <h5 class="price">$${product.price/100.0}</h5>
-            <button class="add" onclick="addToCard(${product})">ADD TO CART</button>
+            <h1 class="name">${this.product.name}</h1>
+            <p class="description">${this.product.description}</p>
+            <h5 class="price">$${this.product.price/100.0}</h5>
+            <button onclick="handle_addToCart_onclick(event)">ADD TO CART</button>
         `
         this.shadowRoot.innerHTML = "<style>" + style + "</style>" + html;
     }
 }
 customElements.define('product-card', ProductCard);
+
+class CartCard extends HTMLElement {
+    constructor() {
+        super();
+        this.attachShadow({mode: "open"});
+    }
+
+    connectedCallback() {
+        this.product = JSON.parse(this.getAttribute('data-product'));
+        let style = `
+            * {
+                margin: 0;
+                padding: 0;
+            }
+
+            :host {
+                display: flex;
+                max-width: 20ch;
+                gap: 4px;
+                border-top: solid black 1px;
+                padding-top: 8px;
+            }
+
+            .name {
+                margin-bottom: 4px;
+                font-size: 1em;
+            }
+
+            .price {
+                font-size: 1.1em;
+            }
+
+            button {
+                cursor: pointer;
+            }
+        `;
+        let html = `
+            <div>
+                <p class="name">${this.product.name}</p>
+                <p class="price">$${this.product.price/100.0}</p>
+            </div>
+            <button onclick="handle_removeFromCart_onclick(event)">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
+            </button>
+        `
+        this.shadowRoot.innerHTML = "<style>" + style + "</style>" + html;
+    }
+}
+customElements.define('cart-card', CartCard);
     </script>
 
     <script>loadProducts()</script>
