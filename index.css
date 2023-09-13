@@ -1,0 +1,145 @@
+:root {
+    font-family: sans-serif;
+}
+
+.material-symbols-outlined {
+    font-variation-settings:
+    'FILL' 0,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 24
+  }
+
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0;
+}
+
+main {
+    margin: 1.5em;
+}
+
+#product-browser-page {
+    display: flex;
+    align-items: flex-start;
+}
+
+#products-container {
+    display: flex;
+    max-width: 1200px;
+    column-gap: 0.5em;
+    row-gap: 1em;
+    flex-wrap: wrap;
+}
+
+header {
+    display: grid;
+    width: 100%;
+    grid-template-columns: 1fr 10fr 1fr;
+    grid-template-areas: ". title cart";
+}
+
+.main-page-title {
+    grid-area: title;
+    text-align: center;
+}
+
+.cart-container {
+    grid-area: cart;
+    align-self: center;
+    justify-self: center;
+    position: relative;
+}
+
+.shopping-cart-icon {
+    font-size: 2.5rem;
+    border-radius: 100%;
+    padding: 8px;
+    user-select: none;
+    cursor: pointer;
+}
+
+.shopping-cart-icon:hover {
+    background: #00000018;
+}
+
+.cart-container::after {
+    content: attr(data-count);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    right: 0;
+    top: 0;
+    font-size: 0.85rem;
+    width: 1.5em;
+    height: 1.5em;
+    border-radius: 100%;
+    background: red;
+    color: white;
+    user-select: none;
+}
+
+#cart-contents-panel {
+    background: white;
+    display: flex;
+    flex-direction: column;
+    row-gap: 0.5em;
+}
+
+#cart-contents-panel button {
+    font-size: 1em;
+}
+
+#cart-contents-panel[data-count="0"] #cart-summary {
+    display: none;
+}
+
+.usa-form--large {
+    width: 756px;
+    margin-bottom: 1.5em;
+}
+
+.usa-input, .usa-select {
+    display: block;
+    margin-bottom: 1em;
+    width: 100%;
+}
+
+.usa-hint {
+    color: #686868;
+}
+
+.usa-fieldset--no-border {
+    border: none;
+}
+
+.usa-legend--large {
+    font-size: 1.5em;
+    margin-bottom: 0.5em;
+}
+
+#use-shipping-address {
+    margin-bottom: 1em;
+}
+
+#use-shipping-address:checked + .usa-fieldset,
+#use-shipping-address:checked + .usa-fieldset + .usa-fieldset {
+    display: none;
+}
+
+#place-order-button {
+    width: 100%;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+#checkout-page .back-button {
+    display: flex;
+    align-items: center;
+    font-size: 1rem;
+    margin-bottom: 1em;
+    padding-right: 1em;
+}
