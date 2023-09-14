@@ -143,6 +143,17 @@ function createOrder(shippingAddress, paymentInfo, billingAddress) {
         billingAddress,
         items
     }
+    // fetch("https://jdq3pe0p88.execute-api.us-east-2.amazonaws.com/Prod/orders", {
+    //     method: "POST",
+    //     headers: {
+    //         "Authorization": "Bearer " + sessionStorage.getItem("id_token"),
+    //         "Content-Type": "application/json"
+    //     },
+    //     body: JSON.stringify(order)
+    // })
+    // .then(res => res.json())
+    // .then(orderConfirmation => console.log(orderConfirmation));
+    let orderConfirmation = JSON.parse(`{"shippingAddress":{"firstName":"","middleName":"","lastName":"","mailingAddress1":"","mailingAddress2":"","city":"","state":"","zip":"","urbanization":""},"paymentInfo":{"nameOnCard":"","cardNumber":"","securityCode":"","expiration":""},"billingAddress":{"firstName":"","middleName":"","lastName":"","mailingAddress1":"","mailingAddress2":"","city":"","state":"","zip":"","urbanization":""},"items":[{"PLU":"961947050502","price":119999}],"OrderId":"3f59a337-9d96-4ce6-88ab-4a47c474e046"}`);
 }
 
 window.onpopstate = function(event) {
