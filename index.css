@@ -37,6 +37,11 @@ main {
 header {
     display: grid;
     width: 100%;
+    grid-template-columns: 2fr 20fr 1fr 1fr;
+    grid-template-areas: ". title login cart";
+}
+
+body[data-authenticated="true"] header {
     grid-template-columns: 1fr 10fr 1fr;
     grid-template-areas: ". title cart";
 }
@@ -44,6 +49,16 @@ header {
 .main-page-title {
     grid-area: title;
     text-align: center;
+}
+
+#login-button {
+    grid-area: login;
+    align-self: center;
+    justify-self: center;
+}
+
+body[data-authenticated="true"] #login-button {
+    display: none;
 }
 
 .cart-container {

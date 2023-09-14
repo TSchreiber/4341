@@ -6,6 +6,7 @@
     <title>CS4389</title>
     <link rel="stylesheet" href="index.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <script src="auth.js"></script>
     <script src="CartCard.js"></script>
     <script src="ProductCard.js"></script>
     <script src="index.js" defer></script>
@@ -14,6 +15,7 @@
     
     <header>
         <h1 class="main-page-title">E-Commerce Website</h1>
+        <a id="login-button" href="https://cs4389.auth.us-east-2.amazoncognito.com/login?response_type=code&client_id=4ptvlocege0j3ireukoe83jm1u&redirect_uri=http%3A%2F%2Flocalhost%3A8080%2F">Login/Signup</a>
         <div id="cart" class="cart-container" onclick="handle_cart_onclick(event)" data-count="0"> 
             <span class="material-symbols-outlined shopping-cart-icon">shopping_cart</span>
         </div>
