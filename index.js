@@ -1,23 +1,14 @@
 function loadProducts() {
-    // api_url = "https://pwt6n24ft2.execute-api.us-east-2.amazonaws.com";
-    // fetch(api_url+"/products")
-    // .then(res_raw => res_raw.json())
-    // .then(res => populateProducts(res));
-    let products = JSON.parse(`[{"PLU":"910956136334","description":"A smart home thermostat that helps you save energy and customize your home's temperature from your phone.","price":19999,"name":"EcoSmart Thermostat"},{"PLU":"961947050502","description":"A sleek and powerful laptop with a high-resolution display, fast processor, and all-day battery life.","price":119999,"name":"TechPro UltraBook X1"},{"PLU":"982038352481","description":"Enjoy the rich and aromatic flavors of our ethically sourced, 100% organic coffee beans.","price":1499,"name":"Premium Organic Coffee Beans"},{"PLU":"921363448554","description":"A professional-grade DSLR camera with a high-resolution sensor, 4K video recording, and advanced shooting modes.","price":149999,"name":"CapturePro DSLR Camera"},{"PLU":"931061209310","description":"Lightweight and breathable running shoes designed for maximum speed and comfort during your workouts.","price":8999,"name":"SpeedMax Running Shoes"}]`);
-    populateProducts(products);
+    api_url = "https://jdq3pe0p88.execute-api.us-east-2.amazonaws.com";
+    fetch(api_url+"/Prod/products")
+    .then(res_raw => res_raw.json())
+    .then(res => populateProducts(res));
 }
 
-function loadProductByPLU(PLU) {
-// api_url = "https://pwt6n24ft2.execute-api.us-east-2.amazonaws.com";
-    // fetch(api_url+"/products/"+PLU)
-    // .then(res_raw => res_raw.json())
-    // .then(res => populateProducts(res));
-    let products = JSON.parse(`[{"PLU":"910956136334","description":"A smart home thermostat that helps you save energy and customize your home's temperature from your phone.","price":19999,"name":"EcoSmart Thermostat"},{"PLU":"961947050502","description":"A sleek and powerful laptop with a high-resolution display, fast processor, and all-day battery life.","price":119999,"name":"TechPro UltraBook X1"},{"PLU":"982038352481","description":"Enjoy the rich and aromatic flavors of our ethically sourced, 100% organic coffee beans.","price":1499,"name":"Premium Organic Coffee Beans"},{"PLU":"921363448554","description":"A professional-grade DSLR camera with a high-resolution sensor, 4K video recording, and advanced shooting modes.","price":149999,"name":"CapturePro DSLR Camera"},{"PLU":"931061209310","description":"Lightweight and breathable running shoes designed for maximum speed and comfort during your workouts.","price":8999,"name":"SpeedMax Running Shoes"}]`);
-    for (let p of products) {
-        if (p.PLU == PLU) {
-            return p;
-        }
-    }
+async function loadProductByPLU(PLU) {
+    api_url = "https://jdq3pe0p88.execute-api.us-east-2.amazonaws.com";
+    let res_raw = await fetch(api_url+"/Prod/products/"+PLU);
+    return await res_raw.json();
 }
 
 function populateProducts(products) {
@@ -143,17 +134,16 @@ function createOrder(shippingAddress, paymentInfo, billingAddress) {
         billingAddress,
         items
     }
-    // fetch("https://jdq3pe0p88.execute-api.us-east-2.amazonaws.com/Prod/orders", {
-    //     method: "POST",
-    //     headers: {
-    //         "Authorization": "Bearer " + sessionStorage.getItem("id_token"),
-    //         "Content-Type": "application/json"
-    //     },
-    //     body: JSON.stringify(order)
-    // })
-    // .then(res => res.json())
-    // .then(orderConfirmation => console.log(orderConfirmation));
-    let orderConfirmation = JSON.parse(`{"shippingAddress":{"firstName":"","middleName":"","lastName":"","mailingAddress1":"","mailingAddress2":"","city":"","state":"","zip":"","urbanization":""},"paymentInfo":{"nameOnCard":"","cardNumber":"","securityCode":"","expiration":""},"billingAddress":{"firstName":"","middleName":"","lastName":"","mailingAddress1":"","mailingAddress2":"","city":"","state":"","zip":"","urbanization":""},"items":[{"PLU":"961947050502","price":119999}],"OrderId":"3f59a337-9d96-4ce6-88ab-4a47c474e046"}`);
+    fetch("https://jdq3pe0p88.execute-api.us-east-2.amazonaws.com/Prod/orders", {
+        method: "POST",
+        headers: {
+            "Authorization": "Bearer " + sessionStorage.getItem("id_token"),
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(order)
+    })
+    .then(res => res.json())
+    .then(orderConfirmation => console.log(orderConfirmation));
 }
 
 window.onpopstate = function(event) {
@@ -169,7 +159,8 @@ if (userIsAuthenticated) {
 if (sessionStorage.getItem("cart")) {
     let items = JSON.parse(sessionStorage.getItem("cart"));
     for (let item of items) {
-        cart.add(loadProductByPLU(item));
+        loadProductByPLU(item)
+           .then(item => cart.add(item));
     }
 }
 
