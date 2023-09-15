@@ -3,7 +3,7 @@ function getToken() {
     let cognito_base_uri = "cs4389.auth.us-east-2.amazoncognito.com";
     let code = new URLSearchParams(window.location.search).get("code");
     let grant_type = "authorization_code";
-    let redirect_uri = "http://localhost:8080/";
+    let redirect_uri = "https://main.d31qydfudkb5q9.amplifyapp.com";
 
     let headers = {
         "Content-Type": "application/x-www-form-urlencoded",
