@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CS4389</title>
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <script src="checkout.js" defer type="module"></script>
+</head>
+<body>
+    
+    <header>
+        <h1 class="main-page-title">E-Commerce Website</h1>
+    </header>
+
+    <main>
+        <a href="/" class="back-button"><svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="M640-80 240-480l400-400 71 71-329 329 329 329-71 71Z"/></svg> Back</a>
+
+        <form  id="shipping-address-form" class="usa-form usa-form--large">
+            <fieldset class="usa-fieldset">
+                <legend class="usa-legend usa-legend--large">Shipping address</legend>
+                <fieldset class="usa-fieldset usa-fieldset--no-border">
+                    <legend class="usa-legend usa-legend--large">Name</legend>
+                    <label class="usa-label" for="given-name">First or given name</label>
+                    <div class="usa-hint" id="gnHint">For example, Jose, Darren, or Mai</div>
+                    <input
+                    class="usa-input usa-input--xl"
+                    id="given-name"
+                    name="first-name"
+                    aria-describedby="gnHint"
+                    />
+                    <label class="usa-label" for="middle-name">Middle name (Optional)</label>
+                    <input
+                    class="usa-input usa-input--xl"
+                    id="middle-name"
+                    name="middle-name"
+                    />
+                    <label class="usa-label" for="family-name">Last or family name</label>
+                    <div class="usa-hint" id="lnHint">
+                    For example, Martinez Gonzalez, Gu, or Smith
+                    </div>
+                    <input
+                    class="usa-input usa-input--xl"
+                    id="family-name"
+                    name="last-name"
+                    aria-describedby="lnHint"
+                    />
+                </fieldset>
+
+                <fieldset class="usa-fieldset usa-fieldset--no-border">
+                    <legend class="usa-legend usa-legend--large">Address</legend>
+                    <label class="usa-label" for="mailing-address-1">Street address</label>
+                    <input class="usa-input" id="mailing-address-1" name="mailing-address-1" />
+                    <label class="usa-label" for="mailing-address-2">Street address line 2</label>
+                    <input class="usa-input" id="mailing-address-2" name="mailing-address-2" />
+                    <label class="usa-label" for="city">City</label>
+                    <input class="usa-input" id="city" name="city" required />
+                    <label class="usa-label" for="state">State, territory, or military post</label>
+                    <select class="usa-select" id="state" name="state">
+                        <option value>- Select -</option>
+                        <option value="AL">AL - Alabama</option>
+                        <option value="AK">AK - Alaska</option>
+                        <option value="AS">AS - American Samoa</option>
+                        <option value="AZ">AZ - Arizona</option>
+                        <option value="AR">AR - Arkansas</option>
+                        <option value="CA">CA - California</option>
+                        <option value="CO">CO - Colorado</option>
+                        <option value="CT">CT - Connecticut</option>
+                        <option value="DE">DE - Delaware</option>
+                        <option value="DC">DC - District of Columbia</option>
+                        <option value="FL">FL - Florida</option>
+                        <option value="GA">GA - Georgia</option>
+                        <option value="GU">GU - Guam</option>
+                        <option value="HI">HI - Hawaii</option>
+                        <option value="ID">ID - Idaho</option>
+                        <option value="IL">IL - Illinois</option>
+                        <option value="IN">IN - Indiana</option>
+                        <option value="IA">IA - Iowa</option>
+                        <option value="KS">KS - Kansas</option>
+                        <option value="KY">KY - Kentucky</option>
+                        <option value="LA">LA - Louisiana</option>
+                        <option value="ME">ME - Maine</option>
+                        <option value="MD">MD - Maryland</option>
+                        <option value="MA">MA - Massachusetts</option>
+                        <option value="MI">MI - Michigan</option>
+                        <option value="MN">MN - Minnesota</option>
+                        <option value="MS">MS - Mississippi</option>
+                        <option value="MO">MO - Missouri</option>
+                        <option value="MT">MT - Montana</option>
+                        <option value="NE">NE - Nebraska</option>
+                        <option value="NV">NV - Nevada</option>
+                        <option value="NH">NH - New Hampshire</option>
+                        <option value="NJ">NJ - New Jersey</option>
+                        <option value="NM">NM - New Mexico</option>
+                        <option value="NY">NY - New York</option>
+                        <option value="NC">NC - North Carolina</option>
+                        <option value="ND">ND - North Dakota</option>
+                        <option value="MP">MP - Northern Mariana Islands</option>
+                        <option value="OH">OH - Ohio</option>
+                        <option value="OK">OK - Oklahoma</option>
+                        <option value="OR">OR - Oregon</option>
+                        <option value="PA">PA - Pennsylvania</option>
+                        <option value="PR">PR - Puerto Rico</option>
+                        <option value="RI">RI - Rhode Island</option>
+                        <option value="SC">SC - South Carolina</option>
+                        <option value="SD">SD - South Dakota</option>
+                        <option value="TN">TN - Tennessee</option>
+                        <option value="TX">TX - Texas</option>
+                        <option value="UM">UM - United States Minor Outlying Islands</option>
+                        <option value="UT">UT - Utah</option>
+                        <option value="VT">VT - Vermont</option>
+                        <option value="VI">VI - Virgin Islands</option>
+                        <option value="VA">VA - Virginia</option>
+                        <option value="WA">WA - Washington</option>
+                        <option value="WV">WV - West Virginia</option>
+                        <option value="WI">WI - Wisconsin</option>
+                        <option value="WY">WY - Wyoming</option>
+                        <option value="AA">AA - Armed Forces Americas</option>
+                        <option value="AE">AE - Armed Forces Africa</option>
+                        <option value="AE">AE - Armed Forces Canada</option>
+                        <option value="AE">AE - Armed Forces Europe</option>
+                        <option value="AE">AE - Armed Forces Middle East</option>
+                        <option value="AP">AP - Armed Forces Pacific</option>
+                    </select>
+                    <label class="usa-label" for="zip">ZIP code</label>
+                    <input
+                        class="usa-input usa-input--medium"
+                        id="zip"
+                        name="zip"
+                        pattern="[\d]{5}(-[\d]{4})?"
+                    />
+                    <label class="usa-label" for="urbanization">Urbanization (Puerto Rico only)</label>
+                    <input class="usa-input" id="urbanization" name="urbanization" />
+                </fieldset>
+            </fieldset>
+        </form>
+
+        <form id="payment-form" class="usa-form usa-form--large">
+            <fieldset class="usa-fieldset">
+                <legend class="usa-legend usa-legend--large">Payment information</legend>
+                <label for="name-on-card" class="usa-label">Name on card</label>
+                <input
+                    class="usa-input usa-input--xl"
+                    id="name-on-card"
+                    name="name-on-card"
+                    />
+                <label for="card-number" class="usa-label">Card number</label>
+                <input
+                    class="usa-input usa-input--xl"
+                    id="card-number"
+                    name="card-number"
+                    />
+                <label for="security-code" class="usa-label">Security Code</label>
+                <input
+                    class="usa-input usa-input--xl"
+                    id="security-code"
+                    name="security-code"
+                    />
+                <label for="expiration" class="usa-label">Expiration</label>
+                <input
+                    class="usa-input usa-input--xl"
+                    id="expiration"
+                    name="expiration"
+                    />
+            </fieldset>
+        </form>
+
+        <form  id="billing-address-form" class="usa-form usa-form--large">
+            <fieldset class="usa-fieldset">
+                <legend class="usa-legend usa-legend--large">Billing address</legend>
+                <label for="use-shipping-address">Use shipping address</label>
+                <input type="checkbox" name="use-shipping-address" id="use-shipping-address" checked="true"/>
+                <fieldset class="usa-fieldset usa-fieldset--no-border">
+                    <legend class="usa-legend usa-legend--large">Name</legend>
+                    <label class="usa-label" for="given-name">First or given name</label>
+                    <div class="usa-hint" id="gnHint">For example, Jose, Darren, or Mai</div>
+                    <input
+                    class="usa-input usa-input--xl"
+                    id="given-name"
+                    name="first-name"
+                    aria-describedby="gnHint"
+                    />
+                    <label class="usa-label" for="middle-name">Middle name (Optional)</label>
+                    <input
+                    class="usa-input usa-input--xl"
+                    id="middle-name"
+                    name="middle-name"
+                    />
+                    <label class="usa-label" for="family-name">Last or family name</label>
+                    <div class="usa-hint" id="lnHint">
+                    For example, Martinez Gonzalez, Gu, or Smith
+                    </div>
+                    <input
+                    class="usa-input usa-input--xl"
+                    id="family-name"
+                    name="last-name"
+                    aria-describedby="lnHint"
+                    />
+                </fieldset>
+
+                <fieldset class="usa-fieldset usa-fieldset--no-border">
+                    <legend class="usa-legend usa-legend--large">Address</legend>
+                    <label class="usa-label" for="mailing-address-1">Street address</label>
+                    <input class="usa-input" id="mailing-address-1" name="mailing-address-1" />
+                    <label class="usa-label" for="mailing-address-2">Street address line 2</label>
+                    <input class="usa-input" id="mailing-address-2" name="mailing-address-2" />
+                    <label class="usa-label" for="city">City</label>
+                    <input class="usa-input" id="city" name="city" required />
+                    <label class="usa-label" for="state">State, territory, or military post</label>
+                    <select class="usa-select" id="state" name="state">
+                        <option value>- Select -</option>
+                        <option value="AL">AL - Alabama</option>
+                        <option value="AK">AK - Alaska</option>
+                        <option value="AS">AS - American Samoa</option>
+                        <option value="AZ">AZ - Arizona</option>
+                        <option value="AR">AR - Arkansas</option>
+                        <option value="CA">CA - California</option>
+                        <option value="CO">CO - Colorado</option>
+                        <option value="CT">CT - Connecticut</option>
+                        <option value="DE">DE - Delaware</option>
+                        <option value="DC">DC - District of Columbia</option>
+                        <option value="FL">FL - Florida</option>
+                        <option value="GA">GA - Georgia</option>
+                        <option value="GU">GU - Guam</option>
+                        <option value="HI">HI - Hawaii</option>
+                        <option value="ID">ID - Idaho</option>
+                        <option value="IL">IL - Illinois</option>
+                        <option value="IN">IN - Indiana</option>
+                        <option value="IA">IA - Iowa</option>
+                        <option value="KS">KS - Kansas</option>
+                        <option value="KY">KY - Kentucky</option>
+                        <option value="LA">LA - Louisiana</option>
+                        <option value="ME">ME - Maine</option>
+                        <option value="MD">MD - Maryland</option>
+                        <option value="MA">MA - Massachusetts</option>
+                        <option value="MI">MI - Michigan</option>
+                        <option value="MN">MN - Minnesota</option>
+                        <option value="MS">MS - Mississippi</option>
+                        <option value="MO">MO - Missouri</option>
+                        <option value="MT">MT - Montana</option>
+                        <option value="NE">NE - Nebraska</option>
+                        <option value="NV">NV - Nevada</option>
+                        <option value="NH">NH - New Hampshire</option>
+                        <option value="NJ">NJ - New Jersey</option>
+                        <option value="NM">NM - New Mexico</option>
+                        <option value="NY">NY - New York</option>
+                        <option value="NC">NC - North Carolina</option>
+                        <option value="ND">ND - North Dakota</option>
+                        <option value="MP">MP - Northern Mariana Islands</option>
+                        <option value="OH">OH - Ohio</option>
+                        <option value="OK">OK - Oklahoma</option>
+                        <option value="OR">OR - Oregon</option>
+                        <option value="PA">PA - Pennsylvania</option>
+                        <option value="PR">PR - Puerto Rico</option>
+                        <option value="RI">RI - Rhode Island</option>
+                        <option value="SC">SC - South Carolina</option>
+                        <option value="SD">SD - South Dakota</option>
+                        <option value="TN">TN - Tennessee</option>
+                        <option value="TX">TX - Texas</option>
+                        <option value="UM">UM - United States Minor Outlying Islands</option>
+                        <option value="UT">UT - Utah</option>
+                        <option value="VT">VT - Vermont</option>
+                        <option value="VI">VI - Virgin Islands</option>
+                        <option value="VA">VA - Virginia</option>
+                        <option value="WA">WA - Washington</option>
+                        <option value="WV">WV - West Virginia</option>
+                        <option value="WI">WI - Wisconsin</option>
+                        <option value="WY">WY - Wyoming</option>
+                        <option value="AA">AA - Armed Forces Americas</option>
+                        <option value="AE">AE - Armed Forces Africa</option>
+                        <option value="AE">AE - Armed Forces Canada</option>
+                        <option value="AE">AE - Armed Forces Europe</option>
+                        <option value="AE">AE - Armed Forces Middle East</option>
+                        <option value="AP">AP - Armed Forces Pacific</option>
+                    </select>
+                    <label class="usa-label" for="zip">ZIP code</label>
+                    <input
+                        class="usa-input usa-input--medium"
+                        id="zip"
+                        name="zip"
+                        pattern="[\d]{5}(-[\d]{4})?"
+                    />
+                    <label class="usa-label" for="urbanization">Urbanization (Puerto Rico only)</label>
+                    <input class="usa-input" id="urbanization" name="urbanization" />
+                </fieldset>
+            </fieldset>
+        </form>
+
+        <button id="place-order-button">Place order</button>
+    </main>
+</body>
+</html>
