@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+</head>
+<body>
+    <script type="module">
+        import {auth} from "/modules/auth.js";
+        let redirect_url = sessionStorage.getItem("auth_redirect") || ""; 
+        sessionStorage.removeItem("auth_redirect");
+        if (new URLSearchParams(window.location.search).has("code")) {
+            auth.getToken()
+            .then(() => window.location = redirect_url);
+        }
+    </script>
+</body>
+</html>
