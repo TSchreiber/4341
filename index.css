@@ -73,7 +73,6 @@ body[data-authenticated="true"] #login-button {
     border-radius: 100%;
     padding: 8px;
     user-select: none;
-    cursor: pointer;
 }
 
 .shopping-cart-icon:hover {

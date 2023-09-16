@@ -8,11 +8,13 @@
 <body>
     <script type="module">
         import {auth} from "/modules/auth.js";
-        let redirect_url = sessionStorage.getItem("auth_redirect") || ""; 
+        let redirect_url = sessionStorage.getItem("auth_redirect") || window.location.origin; 
         sessionStorage.removeItem("auth_redirect");
         if (new URLSearchParams(window.location.search).has("code")) {
             auth.getToken()
             .then(() => window.location = redirect_url);
+        } else {
+            window.location = window.location.origin;
         }
     </script>
 </body>

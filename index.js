@@ -63,9 +63,9 @@ const cart = {
 document.getElementById("proceed-to-checkout-button")
 .addEventListener("click", () =>{
     if (!auth.isAuthenticated()) {
-        document.getElementById("login-button").click();
+        auth.login(window.location.origin + "/checkout.html")
     } else {
-        window.location = "/checkout.html";
+        window.location = window.location.origin + "/checkout.html";
     }
 });
 

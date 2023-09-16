@@ -42,10 +42,3 @@ export const auth = {
     }
     
 }
-
-// var userIsAuthenticated = isAuthenticated();
-// if (!userIsAuthenticated) {
-//     if (new URLSearchParams(window.location.search).has("code")) {
-//         getToken();
-//     }
-// }
