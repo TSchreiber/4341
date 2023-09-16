@@ -31,7 +31,7 @@ function createOrder(shippingAddress, paymentInfo, billingAddress) {
     } else {
         delete billingAddress.useShippingAddress;
     }
-    let items = sessionStorage.getItem("cart");
+    let items = JSON.parse(sessionStorage.getItem("cart"))
     let order = {
         shippingAddress,
         paymentInfo,
@@ -39,8 +39,9 @@ function createOrder(shippingAddress, paymentInfo, billingAddress) {
         items
     }
     Orders.post(order)
-    .then(OrderID => {
+    .then(res => res.json())
+    .then(body => {
         sessionStorage.removeItem("cart");
-        window.location = `/order.html?OrderId=${OrderId}`;
+        window.location = `/order.html?OrderId=${body.OrderId}`;
     });
 }
