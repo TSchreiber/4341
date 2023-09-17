@@ -19,6 +19,6 @@ export const Orders = {
             },
             body: JSON.stringify(order)
         })
-        return await res.json()
+        return JSON.parse(await res.text());
     }
 }
