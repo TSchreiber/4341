@@ -24,7 +24,10 @@ export const auth = {
         let cognito_base_uri = "cs4389.auth.us-east-2.amazoncognito.com";
         let code = new URLSearchParams(window.location.search).get("code");
         let grant_type = "authorization_code";
-        let redirect_uri = "http://localhost:8080/auth.html";
+        let redirect_uri = window.location.origin + "/auth.html";
+        if (window.location.origin === "http://127.0.0.1:8080") {
+            redirect_uri = "http://localhost:8080/auth.html";
+        }
     
         let headers = {
             "Content-Type": "application/x-www-form-urlencoded",
@@ -40,7 +43,6 @@ export const auth = {
             body: new URLSearchParams(Object.entries(body)).toString()
         })
         let res = await res_raw.json();
-        console.log(res);
         sessionStorage.setItem("access_token", res.access_token);
         sessionStorage.setItem("id_token", res.id_token);
     }
