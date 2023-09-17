@@ -39,7 +39,6 @@ function createOrder(shippingAddress, paymentInfo, billingAddress) {
         items
     }
     Orders.post(order)
-    .then(res => res.json())
     .then(body => {
         sessionStorage.removeItem("cart");
         window.location = `/order.html?OrderId=${body.OrderId}`;
