@@ -12,8 +12,11 @@ export const auth = {
             redirect = window.location.origin;
         }
         sessionStorage.setItem("auth_redirect", redirect);
-        console.log(sessionStorage);
-        window.location = "https://cs4389.auth.us-east-2.amazoncognito.com/login?response_type=code&client_id=4ptvlocege0j3ireukoe83jm1u&redirect_uri=http%3A%2F%2Flocalhost%3A8080%2Fauth.html";
+        let cognito_redirect_uri = window.location.origin + "/auth.html";
+        if (window.location.origin === "http://127.0.0.1:8080") {
+            cognito_redirect_uri = "http://localhost:8080/auth.html";
+        }
+        window.location = `https://cs4389.auth.us-east-2.amazoncognito.com/login?response_type=code&client_id=4ptvlocege0j3ireukoe83jm1u&redirect_uri=${encodeURIComponent(cognito_redirect_uri)}`;
     },
 
     getToken: async () => {
