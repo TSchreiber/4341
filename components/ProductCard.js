@@ -24,6 +24,11 @@ class ProductCard extends HTMLElement {
                 padding: 4px;
             }
 
+            .image {
+                height: 180px;
+                object-fit: contain;
+            }
+
             .name {
                 font-size: 1.4em;
                 overflow: hidden;
@@ -45,6 +50,11 @@ class ProductCard extends HTMLElement {
             }
         `;
         this.shadowRoot.appendChild(style);
+
+        let pimg = document.createElement("img");
+        pimg.src = this.product.image_url;
+        pimg.classList.add("image");
+        this.shadowRoot.appendChild(pimg);
 
         let pname = document.createElement("h1");
         pname.innerText = this.product.name;
