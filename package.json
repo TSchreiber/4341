@@ -2,9 +2,9 @@
   "name": "cs4389-ecommerce",
   "version": "1.0.0",
   "description": "",
-  "main": "server/index.js",
+  "main": "server/index.mjs",
   "scripts": {
-    "start": "node server/index.js",
+    "start": "node server/index.mjs",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

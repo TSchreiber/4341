@@ -1,19 +1,5 @@
-import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import {
-    DynamoDBDocumentClient,
-    ScanCommand,
-    PutCommand,
-    GetCommand,
-    DeleteCommand,
-} from "@aws-sdk/lib-dynamodb";
-
-const client = new DynamoDBClient({});
-
-const dynamo = DynamoDBDocumentClient.from(client);
-
-const tableName = "Products";
-
-export const handler = async (event, context) => {
+export const createHandler = function(db) {
+return async (event, context) => {
     let body;
     let statusCode = 200;
     const headers = {
@@ -34,10 +20,7 @@ export const handler = async (event, context) => {
                         break;
                     
                     case "GET":
-                        body = await dynamo.send(
-                          new ScanCommand({ TableName: tableName })
-                        );
-                        body = body.Items;
+                        body = await db.getAllProducts();
                         break;
                   
                     default:
@@ -53,15 +36,7 @@ export const handler = async (event, context) => {
                         break;
                     
                     case "GET":
-                        body = await dynamo.send(
-                            new GetCommand({
-                                TableName: tableName,
-                                Key: {
-                                    PLU: event.pathParameters.PLU,
-                                },
-                            })
-                        );
-                        body = body.Item;
+                        body = await db.getProductByPLU(event.pathParameters.PLU);
                         break;
                         
                     default:
@@ -84,4 +59,5 @@ export const handler = async (event, context) => {
         body,
         headers,
     };
+};
 };

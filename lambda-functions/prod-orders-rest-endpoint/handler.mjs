@@ -1,20 +1,7 @@
-import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import {
-    DynamoDBDocumentClient,
-    ScanCommand,
-    PutCommand,
-    GetCommand,
-    DeleteCommand,
-} from "@aws-sdk/lib-dynamodb";
 import crypto from "crypto";
 
-const client = new DynamoDBClient({});
-
-const dynamo = DynamoDBDocumentClient.from(client);
-
-const tableName = "Orders";
-
-export const handler = async (event, context) => {
+export const createHandler = function(db) {
+return async (event, context) => {
     let body;
     let statusCode = 200;
     const headers = {
@@ -35,10 +22,7 @@ export const handler = async (event, context) => {
                 break;
             
             case "GET":
-                body = await dynamo.send(
-                    new ScanCommand({ TableName: tableName })
-                );
-                body = body.Items;
+                body = db.getAllOrders();
                 break;
             
             case "POST":
@@ -52,14 +36,8 @@ export const handler = async (event, context) => {
                 let promises = [];
                 for (let PLU of order.items) {
                     promises.push(new Promise(res => {
-                        dynamo.send(
-                            new GetCommand({
-                                TableName: "Products",
-                                Key: { PLU },
-                            })
-                        )
-                        .then(body => {
-                            let item = body.Item;
+                        db.getOne(PLU)
+                        .then(item => {
                             res({"PLU": item.PLU, "price": item.price});
                         })
                     }))
@@ -75,12 +53,7 @@ export const handler = async (event, context) => {
                 delete order.paymentInfo.expiration;
                 delete order.paymentInfo.nameOnCard;
                 
-                await dynamo.send(
-                    new PutCommand({
-                        TableName: tableName,
-                        Item: order,
-                    })
-                );
+                await db.insertOrder(order);
                 
                 body = JSON.stringify({"OrderId": order.OrderId});
                 break;
@@ -98,15 +71,7 @@ export const handler = async (event, context) => {
                 break;
                 
             case "GET":
-                body = await dynamo.send(
-                    new GetCommand({
-                        TableName: tableName,
-                        Key: {
-                            OrderId: event.pathParameters.OrderId,
-                        },
-                    })
-                );
-                body = body.Item;
+                body = await db.getOrderById(event.pathParameters.OrderId);
                 break;
                 
             default:
@@ -124,9 +89,10 @@ export const handler = async (event, context) => {
         body = JSON.stringify(body);
     }
 
-  return {
-      statusCode,
-      body,
-      headers,
-  };
+    return {
+        statusCode,
+        body,
+        headers,
+    };
 };
+}
