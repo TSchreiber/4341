@@ -1,0 +1,12 @@
+version: 1
+appRoot: "/front-end/"
+frontend:
+  phases:
+    build:
+      commands: []
+  artifacts:
+    baseDirectory: /
+    files:
+      - '**/*'
+  cache:
+    paths: []
