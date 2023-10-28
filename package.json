@@ -1,0 +1,23 @@
+{
+  "name": "cs4389-ecommerce",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TSchreiber/4389.git"
+  },
+  "author": "TSchreiber",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/TSchreiber/4389/issues"
+  },
+  "homepage": "https://github.com/TSchreiber/4389#readme",
+  "dependencies": {
+    "sqlite3": "^5.1.6"
+  }
+}
