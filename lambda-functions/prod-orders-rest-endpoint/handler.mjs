@@ -28,7 +28,7 @@ return async (event, context) => {
             case "POST":
                 let order = JSON.parse(event.body);
                 order.OrderId = crypto.randomUUID();
-                let id_token_str = event.headers.Authorization.split(" ")[1];
+                let id_token_str = event.headers.authorization.split(" ")[1];
                 let id_token = JSON.parse(Buffer.from(id_token_str.split('.')[1], 'base64').toString());
                 order.user_id = id_token["cognito:username"];
                 order.timestamp = Date.now();
@@ -36,7 +36,7 @@ return async (event, context) => {
                 let promises = [];
                 for (let PLU of order.items) {
                     promises.push(new Promise(res => {
-                        db.getOne(PLU)
+                        db.getProductByPLU(PLU)
                         .then(item => {
                             res({"PLU": item.PLU, "price": item.price});
                         })
@@ -54,7 +54,7 @@ return async (event, context) => {
                 delete order.paymentInfo.nameOnCard;
                 
                 await db.insertOrder(order);
-                
+
                 body = JSON.stringify({"OrderId": order.OrderId});
                 break;
             

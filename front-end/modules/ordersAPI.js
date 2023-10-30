@@ -1,6 +1,14 @@
+let urlBase;
+if (window.location.host == "localhost:8080") {
+    urlBase = "http://localhost:8080";
+} else {
+    urlBase = "https://jdq3pe0p88.execute-api.us-east-2.amazonaws.com/Prod";
+}
+
 export const Orders = {
     get: async OrderId => {
-        let res = await fetch("https://jdq3pe0p88.execute-api.us-east-2.amazonaws.com/Prod/orders/" + OrderId, {
+        let url;
+        let res = await fetch(`${urlBase}/orders/${OrderId}`, {
             method: "GET",
             headers: {
                 "Authorization": "Bearer " + sessionStorage.getItem("id_token"),
@@ -11,7 +19,7 @@ export const Orders = {
     },
 
     post: async (order) => {
-        let res = await fetch("https://jdq3pe0p88.execute-api.us-east-2.amazonaws.com/Prod/orders", {
+        let res = await fetch(`${urlBase}/orders/`, {
             method: "POST",
             headers: {
                 "Authorization": "Bearer " + sessionStorage.getItem("id_token"),
