@@ -89,7 +89,7 @@ describe('Sending a POST request to the /orders endpoint', () => {
                     shippingAddress: test_data.valid_addresses[0],
                     billingAddress: test_data.valid_addresses[0],
                     paymentInfo: test_data.valid_payment_methods[0],
-                    items: test_data.invalid_item_PLUs
+                    items: []
                 })
             });
             if (res.statusCode != 400) {

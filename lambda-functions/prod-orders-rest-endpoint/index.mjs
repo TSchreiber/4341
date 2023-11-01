@@ -26,6 +26,10 @@ const db = {
         ).Items;
     },
 
+    getAllOrdersForUser: async function() {
+
+    },
+
     getOrderById: async function(orderId) {
         return await dynamo.send(
             new GetCommand({

@@ -37,6 +37,16 @@ export default {
         });
     },
 
+    getAllOrdersForUser: function(user_id) {
+        return new Promise((res,rej) => {
+            const stmt = db.prepare("select * from Orders where user_id=?");
+            stmt.all(user_id, (err,row) => {
+                if (err) rej(err);
+                else res(row);
+            });
+        });
+    },
+
     getOrderItems: function(orderId) {
         return new Promise((res,rej) => {
             const stmt = db.prepare("select * from OrderItem where OrderId=?");
