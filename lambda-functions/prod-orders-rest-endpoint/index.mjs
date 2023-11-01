@@ -26,8 +26,17 @@ const db = {
         ).Items;
     },
 
-    getAllOrdersForUser: async function() {
-
+    getAllOrdersForUser: async function(user_id) {
+        return await dynamodb.query(
+            TableName="Orders",
+            KeyConditionExpression='#user_id = :user_id',
+            ExpressionAttributeNames={
+                "#user_id": "user_id"
+            }
+            ExpressionAttributeValues={
+                ':user_id': {'S': user_id}
+            }
+        ).Items;
     },
 
     getOrderById: async function(orderId) {
