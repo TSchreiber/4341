@@ -288,7 +288,7 @@ describe("Sending a GET request to the /orders/{OrderId+} endpoint", () => {
                 authorization: "Bearer " + test_data.invalid_id_tokens.user_id_not_provided
             },
             pathParameters: {
-                OrderId: test_data.valid_order_ids[0]
+                OrderId: "21636e24-d65c-4eb8-9477-50c2c4f5d735"
             }
         });
 
@@ -298,13 +298,13 @@ describe("Sending a GET request to the /orders/{OrderId+} endpoint", () => {
     });
     it("should return a \"403 - Forbidden\" status when the user is not the owner of the order", async () => {
         let res = await handleOrderRequest({
-            resource: "/orders{OrderId+}",
+            resource: "/orders/{OrderId+}",
             httpMethod: "GET",
             headers: {
                 authorization: "Bearer " + test_data.valid_id_tokens[1]
             },
             pathParameters: {
-                OrderId: test_data.valid_order_ids[0]
+                OrderId: "21636e24-d65c-4eb8-9477-50c2c4f5d735"
             }
         });
 

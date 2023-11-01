@@ -125,6 +125,3 @@ test_data.valid_orders = [
         items: test_data.valid_item_PLUs
     },
 ];
-
-test_data.valid_order_ids = [
-]

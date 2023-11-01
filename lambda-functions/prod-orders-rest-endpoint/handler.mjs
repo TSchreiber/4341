@@ -152,66 +152,42 @@ const handlers = {
             };
         }
     },
-    "/orders/{OrderId+}": {}
+
+    "/orders/{OrderId+}": {
+
+        "OPTIONS": function() {
+            return {
+                body: "",
+                statusCode: 200,
+                headers: {
+                    "Content-Type": "application/json",
+                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+                    "Access-Control-Allow-Methods": "GET,OPTIONS,POST",
+                    "Access-Control-Allow-Credentials": "true",
+                    "Allow": "OPTIONS, GET"
+                }
+            };
+        },
+
+        "GET": async function(event, db) {
+            let id_token_str = event.headers.authorization.split(" ")[1];
+            let id_token = JSON.parse(Buffer.from(id_token_str.split('.')[1], 'base64').toString());
+            if (!id_token || !id_token.sub || !id_token.email_verified) {
+                return {statusCode: 403, body: "", defaultHeaders};
+            }
+            let order = await db.getOrderById(event.pathParameters.OrderId);
+            if (order.user_id != id_token.sub) {
+                return {statusCode: 403, body: "", defaultHeaders};
+            }
+            return { statusCode: 200, body: JSON.stringify(order), headers: defaultHeaders };
+        }
+    }
 };
 
 export const createHandler = function(db) {
-return async (event, context) => {
-
-    return handlers[event.resource][event.httpMethod](event,db);
-
-    /*
-    let body;
-    let statusCode = 200;
-    try {
-        switch (event.resource) {
-        case "/orders":
-            switch (event.httpMethod) {
-            case "OPTIONS":
-            
-            case "GET": {
-            }
-            
-            case "POST": {
-            }
-            
-            default:
-                throw new Error(`Unsupported route: "${event.httpMethod} ${event.resource}"`);
-            }
-            break;
-            
-        case "/orders/{OrderId+}":
-            switch(event.httpMethod) {
-            case "OPTIONS":
-                body = "";
-                headers["Allow"] = "OPTIONS, GET, POST";
-                break;
-                
-            case "GET":
-                body = await db.getOrderById(event.pathParameters.OrderId);
-                break;
-                
-            default:
-                throw new Error(`Unsupported route: "${event.httpMethod} ${event.resource}"`);
-            }
-            break;
-                
-        default:
-            throw new Error(`Unsupported route: "${event.httpMethod} ${event.resource}"`);
-        }
-    } catch (err) {
-        statusCode = 400;
-        body = err.message;
-    } finally {
-        body = JSON.stringify(body);
-    }
-
-    return {
-        statusCode,
-        body,
-        headers,
+    return (event, context) => {
+        return handlers[event.resource][event.httpMethod](event,db);
     };
-*/
-};
 }
 
