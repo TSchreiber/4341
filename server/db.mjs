@@ -8,6 +8,8 @@ db.serialize(() => {
 });
 
 export default {
+    connection: db, 
+
     getAllProducts: function() {
         return new Promise(res => {
             db.all("select * from Products", (err,row) => res(row));

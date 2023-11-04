@@ -7,6 +7,11 @@ import assert from "assert";
 import fs from "fs";
 import { test_data } from "./test_data.mjs"
 
+const database_test_data_sql = fs.readFileSync("test/database_test_data.sql").toString();
+db.connection.serialize(() => {
+    db.connection.exec(database_test_data_sql);
+});
+
 describe('Sending a POST request to the /orders endpoint', () => {
     describe('with a valid request', () => {
         it("should return the order id of the created order", async () => {
