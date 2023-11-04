@@ -4,7 +4,6 @@ import {
     ScanCommand,
     PutCommand,
     GetCommand,
-    DeleteCommand,
 } from "@aws-sdk/lib-dynamodb";
 
 const client = new DynamoDBClient({});
@@ -12,42 +11,40 @@ const dynamo = DynamoDBDocumentClient.from(client);
 
 const db = {
     getProductByPLU: async function(PLU) {
-        await dynamo.send(
+        let res = await dynamo.send(
             new GetCommand({
                 TableName: "Products",
                 Key: { PLU },
             })
-        ).Item;
+        );
+        return res.Item;
     },
 
     getAllOrders: async function() {
-        return await dynamo.send(
+        let res = await dynamo.send(
             new ScanCommand({ TableName: "Orders" })
-        ).Items;
+        );
+        return res.Items;
     },
 
     getAllOrdersForUser: async function(user_id) {
-        return await dynamodb.query(
-            TableName="Orders",
-            KeyConditionExpression='#user_id = :user_id',
-            ExpressionAttributeNames={
-                "#user_id": "user_id"
-            }
-            ExpressionAttributeValues={
-                ':user_id': {'S': user_id}
-            }
-        ).Items;
+        let res = await dynamo.send(
+            new ScanCommand({ TableName: "Orders" })
+        );
+        return res.Items.filter(order => order.user_id == user_id);
     },
 
-    getOrderById: async function(orderId) {
-        return await dynamo.send(
+    getOrderById: async function(orderId, user_id) {
+        let res = await dynamo.send(
             new GetCommand({
                 TableName: "Orders",
                 Key: {
                     OrderId: orderId,
+                    user_id: user_id
                 }
-            });
-        ).Item;
+            })
+        );
+        return res.Item;
     },
 
     insertOrder: async function(order) {
@@ -60,6 +57,6 @@ const db = {
     },
 };
 
-const { createHandler } = import handler;
+import { createHandler } from "./handler.mjs";
 export const handler = createHandler(db);
 

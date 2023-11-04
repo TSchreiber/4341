@@ -12,9 +12,9 @@ const handlers = {
 
     "/orders": {
 
-        "OPTIONS": function () {
+        "OPTIONS": async () => {
             return {
-                body: "",
+                body: JSON.stringify({}),
                 statusCode: 200,
                 headers: {
                     "Content-Type": "application/json",
@@ -29,6 +29,9 @@ const handlers = {
 
         "GET": async function(event, db) {
             let headers = defaultHeaders;
+            if (!event.headers.authorization) {
+                return {statusCode: 400, body: "", headers: defaultHeaders};
+            }
             let id_token_str = event.headers.authorization.split(" ")[1];
             let id_token = JSON.parse(Buffer.from(id_token_str.split('.')[1], 'base64').toString());
             if (!id_token || !id_token.sub || !id_token.email_verified) {
@@ -39,6 +42,9 @@ const handlers = {
         },
 
         "POST": async function(event, db) {
+            if (!event.headers.authorization) {
+                return {statusCode: 400, body: "", headers: defaultHeaders};
+            }
             let id_token_str = event.headers.authorization.split(" ")[1];
             let id_token = JSON.parse(Buffer.from(id_token_str.split('.')[1], 'base64').toString());
             if (!id_token || !id_token.sub || !id_token.email_verified) {
@@ -155,7 +161,7 @@ const handlers = {
 
     "/orders/{OrderId+}": {
 
-        "OPTIONS": function() {
+        "OPTIONS": async function() {
             return {
                 body: "",
                 statusCode: 200,
@@ -171,12 +177,15 @@ const handlers = {
         },
 
         "GET": async function(event, db) {
+            if (!event.headers.authorization) {
+                return {statusCode: 400, body: "", headers: defaultHeaders};
+            }
             let id_token_str = event.headers.authorization.split(" ")[1];
             let id_token = JSON.parse(Buffer.from(id_token_str.split('.')[1], 'base64').toString());
             if (!id_token || !id_token.sub || !id_token.email_verified) {
                 return {statusCode: 403, body: "", defaultHeaders};
             }
-            let order = await db.getOrderById(event.pathParameters.OrderId);
+            let order = await db.getOrderById(event.pathParameters.OrderId, id_token.sub);
             if (order.user_id != id_token.sub) {
                 return {statusCode: 403, body: "", defaultHeaders};
             }
@@ -186,8 +195,10 @@ const handlers = {
 };
 
 export const createHandler = function(db) {
-    return (event, context) => {
-        return handlers[event.resource][event.httpMethod](event,db);
+    return async (event, context) => {
+        if (event.headers.Authorization) {
+            event.headers.authorization = event.headers.Authorization;
+        }
+        return await handlers[event.resource][event.httpMethod](event,db);
     };
 }
-
