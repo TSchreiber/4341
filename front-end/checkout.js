@@ -63,6 +63,8 @@ function createOrder(shippingAddress, paymentInfo, billingAddress) {
         billingAddress,
         items
     }
+    order.paymentInfo.cardNumber = order.paymentInfo.cardNumber.replaceAll(" ","");
+    console.log(order);
     Orders.post(order)
     .then(body => {
         sessionStorage.removeItem("cart");
@@ -157,6 +159,47 @@ cardInputElement.addEventListener("input", (event) => {
 });
 
 const expirationInputElement = document.getElementById("expiration");
+expirationInputElement.addEventListener("beforeinput", (event) => {
+    if (event.data?.match(/[^\d]/)) {
+        event.preventDefault();
+    }
+
+    let text = expirationInputElement.value;
+    let index = expirationInputElement.selectionEnd;
+    if (event.inputType.includes("delete")) {
+        if (event.inputType.includes("Backward")) {
+            if (text.charAt(index-1) == "/") {
+                expirationInputElement.selectionStart = index - 1;
+                expirationInputElement.selectionEnd = index - 1;
+            }
+        } else if (event.inputType.includes("Forward")) {
+            if (text.charAt(index) == "/") {
+                expirationInputElement.selectionStart = index + 1;
+                expirationInputElement.selectionEnd = index + 1;
+            }
+        }
+    }
+});
+
+expirationInputElement.addEventListener("input", (event) => {
+    let text = expirationInputElement.value.replace(/[^\d]/g,"");
+    let index = expirationInputElement.selectionEnd;
+    if (!["0","1"].includes(text.charAt(0)) && event.inputType.startsWith("insert")) {
+        text = "0" + text;
+        index += 1;
+    }
+    if (text.length == 2) {
+        text += "/";
+        index += 1;
+    } else if (text.length >= 3) {
+        text = text.substring(0,2) + "/" + text.substring(2);
+    }
+    expirationInputElement.value = text;
+
+    expirationInputElement.selectionStart = index;
+    expirationInputElement.selectionEnd = index;
+});
+
 expirationInputElement.addEventListener("input", (event) => {
     let expiration = expirationInputElement.value;
     let matches = 
@@ -167,13 +210,18 @@ expirationInputElement.addEventListener("input", (event) => {
         return;
     }
     let [_,month,year] = matches;
+    let date;
+    date = new Date(`${month}/01/${year}`);
+    if (date == "Invalid Date") {
+        expirationInputElement.setCustomValidity("Invalid date");
+        return;
+    }
     // Did not use,
     // > `new Date(year, monthIndex)`
     // Because it considers year 20 to be 1920
-    if (new Date(`${month}/01/${year}`) < new Date()) {
+    if (date < new Date()) {
         expirationInputElement.setCustomValidity("Card is expired");
         return;
     }
-    console.log(expiration);
     expirationInputElement.setCustomValidity("");
 });
