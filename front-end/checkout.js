@@ -2,12 +2,37 @@ import {Orders} from "/modules/ordersAPI.js";
 
 document.getElementById("place-order-button")
 .addEventListener("click", () => {
+    if (!formIsValid()) {
+        return false;
+    }
     document.getElementById("place-order-button").disabled = true;
     let shippingAddress = formToObject("shipping-address-form");
     let paymentInfo = formToObject("payment-form");
     let billingAddress = formToObject("billing-address-form");
     createOrder(shippingAddress, paymentInfo, billingAddress)
 });
+
+function formIsValid() {
+    for (let input of getAllFormInputs()) {
+        if (!input.reportValidity()) {
+            return false;
+        }
+    }
+    return true;
+}
+
+function getAllFormInputs() {
+    let forms = ["shipping-address-form","payment-form"];
+    if (!document.getElementById("use-shipping-address").checked) {
+        forms.push("billing-address-form");
+    }
+    return forms.flatMap(id => [...getFormInputs(id)]);
+}
+
+function getFormInputs(formId) {
+    return document.getElementById(formId)
+        .querySelectorAll("input,select");
+}
 
 function formToObject(formId) {
     let obj = {}
@@ -47,48 +72,108 @@ function createOrder(shippingAddress, paymentInfo, billingAddress) {
 }
 
 var cardInputElement = document.getElementById("card-number");
-cardInputElement.addEventListener("input", (event) => {
-    let start = cardInputElement.selectionStart;
-    let end = cardInputElement.selectionEnd;
-    if (event.inputType == "deleteContentBackward") {
-        //handle backspace
-        if (start == end && start % 5 == 4) {
-            // if the user has selected multiple characters, or is not deleting
-            // a space, then nothing needs to be done
+cardInputElement.addEventListener("beforeinput", (event) => {
+    if (event.data?.match(/[^\d]/)) {
+        event.preventDefault();
+    }
+
+    if (event.inputType.includes("delete")) {
+        if (event.inputType.includes("Backward")) {
+            let index = cardInputElement.selectionEnd;
             let text = cardInputElement.value;
-            text = text.slice(0,start-1) + text.slice(start);
-            // redo the spaces
-            text = text.replaceAll(" ","");
-            text = text.replace(/(\d{4})/g, "$& ");
-            cardInputElement.value = text;
-            cardInputElement.selectionStart = start - 1;
-            cardInputElement.selectionEnd = end - 1;
-        }
-    } else if (event.inputType == "deleteContentForward") {
-        //handle delete
-        if (start == end && start % 5 == 4) {
-            // if the user has selected multiple characters, or is not deleting
-            // a space, then nothing needs to be done
+            if (text.charAt(index-1) == " ") {
+                cardInputElement.selectionStart = index - 1;
+                cardInputElement.selectionEnd = index - 1;
+            }
+        } else if (event.inputType.includes("Forward")) {
+            let index = cardInputElement.selectionEnd;
             let text = cardInputElement.value;
-            text = text.slice(0,start+1) + text.slice(start+2);
-            // redo the spaces
-            text = text.replaceAll(" ","");
-            text = text.replace(/(\d{4})/g, "$& ");
-            cardInputElement.value = text;
-            cardInputElement.selectionStart = start;
-            cardInputElement.selectionEnd = end;
-        }
-    } else {
-        let num = cardInputElement.value;
-        // remove all non-digit characters
-        num = num.replace(/[^\d]+/g, "");
-        // add a space after every group of four digits
-        num = num.replace(/(\d{4})/g, "$& ");
-        cardInputElement.value = num;
-        if (event.inputType == "insertText") {
-            cardInputElement.selectionStart = end+1;
-            cardInputElement.selectionEnd = end+1;
+            if (text.charAt(index) == " ") {
+                cardInputElement.selectionStart = index + 1;
+                cardInputElement.selectionEnd = index + 1;
+            }
         }
     }
 });
 
+cardInputElement.addEventListener("input", (event) => {
+    let index = cardInputElement.selectionEnd;
+    let text = cardInputElement.value;
+    text = text.replaceAll(" ","");
+    /*
+     * Go to the following link to see the chunking rules for different cards
+     * https://baymard.com/checkout-usability/credit-card-patterns
+     */
+    // amex
+    if (text.startsWith("34") || text.startsWith("37")) {
+        if (text.length >= 10) {
+            text = text.substring(0,4) + " " 
+                 + text.substring(4,10) + " "
+                 + text.substring(10);
+        }
+        else if (text.length >= 4) {
+            text = text.substring(0,4) + " " 
+                 + text.substring(4);
+        } 
+    }
+    // default (most cards are chunked in groups of four)
+    if (text.startsWith("4")) {
+        text = text.replace(/(\d{4})/g, "$& ");
+    } 
+    cardInputElement.value = text;
+
+    // don't leave the cursor on a space
+    if (text.charAt(index) == " " && event.inputType.startsWith("insert")) {
+            index += 1;
+    } else if (text.charAt(index-1) == " " && event.inputType.startsWith("delete")) {
+        index -= 1;
+    }
+    cardInputElement.selectionStart = index;
+    cardInputElement.selectionEnd = index;
+});
+
+cardInputElement.addEventListener("input", (event) => {
+    let PAN = cardInputElement.value.replaceAll(" ","");
+    if (PAN.length < 8) {
+        cardInputElement.setCustomValidity("Too few numbers");
+        return;
+    }
+    if (PAN.length > 19) {
+        cardInputElement.setCustomValidity("Too many numbers");
+        return;
+    }
+    let luhnSum = PAN.split("")
+        .reverse()
+        .map(s => parseInt(s))
+        .map((x,i) => i%2 == 0 ? x : x*2)
+        .flatMap(x => x.toString().split(""))
+        .map(s => parseInt(s))
+        .reduce((sum,x) => sum+x, 0);
+    if (luhnSum % 10 != 0) {
+        cardInputElement.setCustomValidity("Could not validate card number");
+        return;
+    }
+    cardInputElement.setCustomValidity("");
+});
+
+const expirationInputElement = document.getElementById("expiration");
+expirationInputElement.addEventListener("input", (event) => {
+    let expiration = expirationInputElement.value;
+    let matches = 
+        expiration.match("^(\\d{2})/(\\d{2})$") ||
+        expiration.match("^(\\d{2})/(\\d{4})$");
+    if (!matches) {
+        expirationInputElement.setCustomValidity("Please use MM/YY or MM/YYYY format");
+        return;
+    }
+    let [_,month,year] = matches;
+    // Did not use,
+    // > `new Date(year, monthIndex)`
+    // Because it considers year 20 to be 1920
+    if (new Date(`${month}/01/${year}`) < new Date()) {
+        expirationInputElement.setCustomValidity("Card is expired");
+        return;
+    }
+    console.log(expiration);
+    expirationInputElement.setCustomValidity("");
+});

@@ -29,6 +29,8 @@
                     id="given-name"
                     name="first-name"
                     aria-describedby="gnHint"
+                    placeholder="John"
+                    required
                     />
                     <label class="usa-label" for="middle-name">Middle name (Optional)</label>
                     <input
@@ -45,19 +47,31 @@
                     id="family-name"
                     name="last-name"
                     aria-describedby="lnHint"
+                    placeholder="Doe"
+                    required
                     />
                 </fieldset>
 
                 <fieldset class="usa-fieldset usa-fieldset--no-border">
                     <legend class="usa-legend usa-legend--large">Address</legend>
                     <label class="usa-label" for="mailing-address-1">Street address</label>
-                    <input class="usa-input" id="mailing-address-1" name="mailing-address-1" />
+                    <input 
+                    class="usa-input" 
+                    id="mailing-address-1" 
+                    placeholder="1234 Example St."
+                    name="mailing-address-1" 
+                    required />
                     <label class="usa-label" for="mailing-address-2">Street address line 2</label>
                     <input class="usa-input" id="mailing-address-2" name="mailing-address-2" />
                     <label class="usa-label" for="city">City</label>
-                    <input class="usa-input" id="city" name="city" required />
+                    <input 
+                    class="usa-input" 
+                    id="city" 
+                    name="city" 
+                    placeholder="City"
+                    required />
                     <label class="usa-label" for="state">State, territory, or military post</label>
-                    <select class="usa-select" id="state" name="state">
+                    <select class="usa-select" id="state" name="state" required>
                         <option value>- Select -</option>
                         <option value="AL">AL - Alabama</option>
                         <option value="AK">AK - Alaska</option>
@@ -129,6 +143,8 @@
                         id="zip"
                         name="zip"
                         pattern="[\d]{5}(-[\d]{4})?"
+                        placeholder="55555"
+                        required
                     />
                     <label class="usa-label" for="urbanization">Urbanization (Puerto Rico only)</label>
                     <input class="usa-input" id="urbanization" name="urbanization" />
@@ -144,24 +160,32 @@
                     class="usa-input usa-input--xl"
                     id="name-on-card"
                     name="name-on-card"
+                    placeholder="John Doe"
+                    required
                     />
                 <label for="card-number" class="usa-label">Card number</label>
                 <input
                     class="usa-input usa-input--xl"
                     id="card-number"
                     name="card-number"
+                    placeholder="4000 0000 0000 0003"
+                    required
                     />
                 <label for="security-code" class="usa-label">Security Code</label>
                 <input
                     class="usa-input usa-input--xl"
                     id="security-code"
                     name="security-code"
+                    placeholder="123"
+                    required
                     />
                 <label for="expiration" class="usa-label">Expiration</label>
                 <input
                     class="usa-input usa-input--xl"
                     id="expiration"
                     name="expiration"
+                    placeholder="01/2030 OR 01/30"
+                    required
                     />
             </fieldset>
         </form>
@@ -180,6 +204,8 @@
                     id="given-name"
                     name="first-name"
                     aria-describedby="gnHint"
+                    placeholder="John"
+                    required
                     />
                     <label class="usa-label" for="middle-name">Middle name (Optional)</label>
                     <input
@@ -196,19 +222,31 @@
                     id="family-name"
                     name="last-name"
                     aria-describedby="lnHint"
+                    placeholder="Doe"
+                    required
                     />
                 </fieldset>
 
                 <fieldset class="usa-fieldset usa-fieldset--no-border">
                     <legend class="usa-legend usa-legend--large">Address</legend>
                     <label class="usa-label" for="mailing-address-1">Street address</label>
-                    <input class="usa-input" id="mailing-address-1" name="mailing-address-1" />
+                    <input 
+                    class="usa-input" 
+                    id="mailing-address-1" 
+                    name="mailing-address-1" 
+                    placeholder="1234 Example St."
+                    required />
                     <label class="usa-label" for="mailing-address-2">Street address line 2</label>
                     <input class="usa-input" id="mailing-address-2" name="mailing-address-2" />
                     <label class="usa-label" for="city">City</label>
-                    <input class="usa-input" id="city" name="city" required />
+                    <input 
+                    class="usa-input" 
+                    id="city" 
+                    name="city" 
+                    placeholder="City"
+                    required />
                     <label class="usa-label" for="state">State, territory, or military post</label>
-                    <select class="usa-select" id="state" name="state">
+                    <select class="usa-select" id="state" name="state" required>
                         <option value>- Select -</option>
                         <option value="AL">AL - Alabama</option>
                         <option value="AK">AK - Alaska</option>
@@ -280,6 +318,8 @@
                         id="zip"
                         name="zip"
                         pattern="[\d]{5}(-[\d]{4})?"
+                        placeholder="55555"
+                        required
                     />
                     <label class="usa-label" for="urbanization">Urbanization (Puerto Rico only)</label>
                     <input class="usa-input" id="urbanization" name="urbanization" />
