@@ -27,6 +27,9 @@ export const Orders = {
             },
             body: JSON.stringify(order)
         })
+        if (!res.ok) {
+            throw new Error(await res.text());
+        }
         return JSON.parse(await res.text());
     }
 }

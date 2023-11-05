@@ -64,7 +64,6 @@ function createOrder(shippingAddress, paymentInfo, billingAddress) {
         items
     }
     order.paymentInfo.cardNumber = order.paymentInfo.cardNumber.replaceAll(" ","");
-    console.log(order);
     Orders.post(order)
     .then(body => {
         sessionStorage.removeItem("cart");

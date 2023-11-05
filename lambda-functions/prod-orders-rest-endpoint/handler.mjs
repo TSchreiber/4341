@@ -43,12 +43,12 @@ const handlers = {
 
         "POST": async function(event, db) {
             if (!event.headers.authorization) {
-                return {statusCode: 400, body: "", headers: defaultHeaders};
+                return {statusCode: 400, body: "No credientials provided", headers: defaultHeaders};
             }
             let id_token_str = event.headers.authorization.split(" ")[1];
             let id_token = JSON.parse(Buffer.from(id_token_str.split('.')[1], 'base64').toString());
             if (!id_token || !id_token.sub || !id_token.email_verified) {
-                return {statusCode: 403, body: "", headers: defaultHeaders};
+                return {statusCode: 403, body: "Invalid credientials", headers: defaultHeaders};
             }
 
             let orderRequest = JSON.parse(event.body);
@@ -59,42 +59,35 @@ const handlers = {
 
             {
                 if (!orderRequest.shippingAddress) {
-                    return {statusCode: 400, body: "", headers: defaultHeaders};
+                    return {statusCode: 400, body: "Shipping address not provided", headers: defaultHeaders};
                 }
                 let {firstName,lastName,mailingAddress1,city,zip} = orderRequest.shippingAddress;
                 if (!firstName || !lastName || !mailingAddress1 || !city || !zip) {
-                    return {statusCode: 400, body: "", headers: defaultHeaders};
+                    return {statusCode: 400, body: "Shipping address not valid", headers: defaultHeaders};
                 }
             }
             {
                 if (!orderRequest.billingAddress) {
-                    return {statusCode: 400, body: "", headers: defaultHeaders};
+                    return {statusCode: 400, body: "Billing address not provided", headers: defaultHeaders};
                 }
                 let {firstName,lastName,mailingAddress1,city,zip} = orderRequest.billingAddress;
                 if (!firstName || !lastName || !mailingAddress1 || !city || !zip) {
-                    return {statusCode: 400, body: "", headers: defaultHeaders};
+                    return {statusCode: 400, body: "billing address not valid", headers: defaultHeaders};
                 }
             }
 
             if (!orderRequest.items || orderRequest.items.length == 0) {
-                return {statusCode: 400, body: "", headers: defaultHeaders};
+                return {statusCode: 400, body: "Items array not provided", headers: defaultHeaders};
             }
-            let promises = [];
-            for (let PLU of orderRequest.items) {
-                promises.push(new Promise(async (res,rej) => {
-                    try {
-                        let item = await db.getProductByPLU(PLU);
-                        res({"PLU": item.PLU, "price": item.price});
-                    } catch (err) {
-                        rej(err);
-                    }
-                }))
-            }
+            
             order.items = [];
             try {
-                order.items = await Promise.all(promises)
+                for (let PLU of orderRequest.items) {
+                    let item = await db.getProductByPLU(PLU);
+                    order.items.push({"PLU": item.PLU, "price": item.price});
+                }
             } catch (e) {
-                return {statusCode: 400, body: "", headers: defaultHeaders};
+                return {statusCode: 400, body: "Items array not valid", headers: defaultHeaders};
             }
 
             // Basic card validation - these are the minimum requirements for a 
@@ -102,40 +95,43 @@ const handlers = {
             // the card is valid
             let paymentInfo = orderRequest.paymentInfo;
             if (!paymentInfo) {
-                return {statusCode: 400, body: "", headers: defaultHeaders};
+                return {statusCode: 400, body: "No payment info provided", headers: defaultHeaders};
             }
             let PAN = paymentInfo.cardNumber;
             let cvc = paymentInfo.securityCode;
             let nameOnCard = paymentInfo.nameOnCard;
             let expiration = paymentInfo.expiration;
             if (!PAN || !cvc || !nameOnCard || !expiration) {
-                return {statusCode: 400, body: "", headers: defaultHeaders};
+                return {statusCode: 400, body: "Missing some payment info", headers: defaultHeaders};
             }
 
             if (PAN.length < 8 || PAN.length > 19) {
-                return {statusCode: 400, body: "", headers: defaultHeaders};
+                return {statusCode: 400, body: "PAN is an invalid length", headers: defaultHeaders};
             }
+            
             let luhnSum = PAN.split("")
                 .reverse()
                 .map(s => parseInt(s))
                 .map((x,i) => i%2 == 0 ? x : x*2)
+                .flatMap(x=>x.toString().split(""))
+                .map(s => parseInt(s))
                 .reduce((sum,x) => sum+x, 0);
             if (luhnSum % 10 != 0) {
-                return {statusCode: 400, body: "", headers: defaultHeaders};
+                return {statusCode: 400, body: "PAN invalid", headers: defaultHeaders};
             }
 
             let matches = 
                 expiration.match("^(\\d{2})/(\\d{2})$") ||
                 expiration.match("^(\\d{2})/(\\d{4})$");
             if (!matches) {
-                return {statusCode: 400, body: "", headers: defaultHeaders};
+                return {statusCode: 400, body: "card expiration incorrect format", headers: defaultHeaders};
             }
             let [_,month,year] = matches;
             // Did not use,
             // > `new Date(year, monthIndex)`
             // Because it considers year 20 to be 1920
             if (new Date(`${month}/01/${year}`) < new Date()) {
-                return {statusCode: 400, body: "", headers: defaultHeaders};
+                return {statusCode: 400, body: "Card is expired", headers: defaultHeaders};
             }
             
             // This is were the card information would be verified and the
@@ -145,7 +141,6 @@ const handlers = {
             // Only save the last four digits of the PAN to meet PCI Data Security Standard
             order.paymentInfo.cardNumber = PAN.substring(PAN.length - 4);
 
-            //console.log(orderRequest);
             order.shippingAddress = orderRequest.shippingAddress;
             order.billingAddress = orderRequest.billingAddress;
             
