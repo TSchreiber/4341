@@ -1,7 +1,6 @@
 import db from "./db.mjs";
 import express from "express";
 const app = express();
-import cors from "cors";
 import { createHandler as createOrderHandler } from "../lambda-functions/prod-orders-rest-endpoint/handler.mjs";
 const handleOrderRequest = createOrderHandler(db);
 import { createHandler as createProductHandler } from "../lambda-functions/prod-products-rest-endpoint/handler.mjs";
