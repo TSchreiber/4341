@@ -8,10 +8,19 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 </head>
 <body>
-    
+    <script type="module">
+        import {auth} from "./modules/auth.js";
+        if (!auth.isAuthenticated()) {
+            window.location = "/";
+        }
+        if (!auth.isAuthenticationValid()) {
+            auth.refreshTokens();
+        }
+    </script>
+
     <header>
         <h1 class="main-page-title">E-Commerce Website</h1>
-    </header>   
+    </header>
 
     <main>
         <a href="/" class="back-button"><svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="M640-80 240-480l400-400 71 71-329 329 329 329-71 71Z"/></svg> Back</a>
@@ -69,18 +78,18 @@
     <script type="module">
         import {Orders} from "/modules/ordersAPI.js";
         import {Products} from "/modules/productsAPI.js";
-        
+
         async function loadOrder() {
             let OrderId = new URLSearchParams(window.location.search).get("OrderId");
             let order = await Orders.get(OrderId);
             document.getElementById("order-id").innerText = order.OrderId;
-            document.getElementById("date").innerText = 
+            document.getElementById("date").innerText =
                 new Date(order.timestamp).toLocaleDateString('en-us', { year:"numeric", month:"long", day:"numeric"});
             document.getElementById("shipping-address").innerText = addressToString(order.shippingAddress);
             let cardNum = order.paymentInfo.cardNumber;
             cardNum = cardNum.substring(cardNum.length - 4);
             document.getElementById("card-number").innerText = cardNum;
-            document.getElementById("grand-total").innerText = 
+            document.getElementById("grand-total").innerText =
                 order.items.map(i => i.price).reduce((sum,x)=>sum+x, 0) / 100.0;
 
             for (let item of order.items) {

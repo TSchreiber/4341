@@ -9,7 +9,16 @@
     <script src="checkout.js" defer type="module"></script>
 </head>
 <body>
-    
+    <script type="module">
+        import {auth} from "./modules/auth.js";
+        if (!auth.isAuthenticated()) {
+            window.location = "/";
+        }
+        if (!auth.isAuthenticationValid()) {
+            auth.refreshTokens();
+        }
+    </script>
+
     <header>
         <h1 class="main-page-title">E-Commerce Website</h1>
     </header>
@@ -55,19 +64,19 @@
                 <fieldset class="usa-fieldset usa-fieldset--no-border">
                     <legend class="usa-legend usa-legend--large">Address</legend>
                     <label class="usa-label" for="mailing-address-1">Street address</label>
-                    <input 
-                    class="usa-input" 
-                    id="mailing-address-1" 
+                    <input
+                    class="usa-input"
+                    id="mailing-address-1"
                     placeholder="1234 Example St."
-                    name="mailing-address-1" 
+                    name="mailing-address-1"
                     required />
                     <label class="usa-label" for="mailing-address-2">Street address line 2</label>
                     <input class="usa-input" id="mailing-address-2" name="mailing-address-2" />
                     <label class="usa-label" for="city">City</label>
-                    <input 
-                    class="usa-input" 
-                    id="city" 
-                    name="city" 
+                    <input
+                    class="usa-input"
+                    id="city"
+                    name="city"
                     placeholder="City"
                     required />
                     <label class="usa-label" for="state">State, territory, or military post</label>
@@ -230,19 +239,19 @@
                 <fieldset class="usa-fieldset usa-fieldset--no-border">
                     <legend class="usa-legend usa-legend--large">Address</legend>
                     <label class="usa-label" for="mailing-address-1">Street address</label>
-                    <input 
-                    class="usa-input" 
-                    id="mailing-address-1" 
-                    name="mailing-address-1" 
+                    <input
+                    class="usa-input"
+                    id="mailing-address-1"
+                    name="mailing-address-1"
                     placeholder="1234 Example St."
                     required />
                     <label class="usa-label" for="mailing-address-2">Street address line 2</label>
                     <input class="usa-input" id="mailing-address-2" name="mailing-address-2" />
                     <label class="usa-label" for="city">City</label>
-                    <input 
-                    class="usa-input" 
-                    id="city" 
-                    name="city" 
+                    <input
+                    class="usa-input"
+                    id="city"
+                    name="city"
                     placeholder="City"
                     required />
                     <label class="usa-label" for="state">State, territory, or military post</label>
