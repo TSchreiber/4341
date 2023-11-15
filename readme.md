@@ -7,7 +7,12 @@ npm install
 npm start
 ```
 
-To run the tests
+To run the API tests
 ```bash
 npm test
+```
+
+To run the front-end tests
+```
+npx cypress open
 ```
